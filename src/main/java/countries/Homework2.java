@@ -3,14 +3,12 @@ package countries;
 import java.io.IOException;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static java.util.stream.Collectors.*;
 
 import java.time.ZoneId;
+import java.util.stream.Collectors;
 
 public class Homework2 {
 
@@ -24,16 +22,16 @@ public class Homework2 {
      * Returns the longest country name translation.
      */
     public Optional<String> streamPipeline1() {
-        // TODO
-        return null;
+
+        return countries.stream().map(Country::getTranslations).flatMap(s -> s.values().stream()).max(Comparator.comparingInt(s -> s.length()));
     }
 
     /**
      * Returns the longest Italian (i.e., {@code "it"}) country name translation.
      */
     public Optional<String> streamPipeline2() {
-        // TODO
-        return null;
+
+        return countries.stream().map(Country::getTranslations).flatMap(y -> y.entrySet().stream().filter(x -> x.getKey() == "it").map(x -> x.getValue())).max(Comparator.comparingInt(s -> s.length()));
     }
 
     /**
@@ -41,29 +39,31 @@ public class Homework2 {
      */
     public void streamPipeline3() {
         // TODO
+
     }
 
     /**
      * Prints single word country names (i.e., country names that do not contain any space characters).
      */
     public void streamPipeline4() {
-        // TODO
+
+        countries.stream().map(Country::getName).filter(s -> !s.contains(" ")).forEach(System.out::println);
     }
 
     /**
      * Returns the country name with the most number of words.
      */
     public Optional<String> streamPipeline5() {
-        // TODO
-        return null;
+
+        return countries.stream().map(Country::getName).max(Comparator.comparingInt(s -> s.split(" ").length));
     }
 
     /**
      * Returns whether there exists at least one capital that is a palindrome.
      */
     public boolean streamPipeline6() {
-        // TODO
-        return false;
+
+        return countries.stream().map(Country::getCapital).anyMatch(s -> new StringBuilder(s) == new StringBuilder(s).reverse());
     }
 
     /**
@@ -86,24 +86,24 @@ public class Homework2 {
      * Returns a map that contains for each character the number of occurrences in country names ignoring case.
      */
     public Map<Character, Long> streamPipeline9() {
-        // TODO
-        return null;
+
+        return countries.stream().flatMap(country -> country.getName().toLowerCase().chars().mapToObj(c ->(char) c)).collect(Collectors.groupingBy(c -> c, Collectors.counting()));
     }
 
     /**
      * Returns a map that contains the number of countries for each possible timezone.
      */
     public Map<ZoneId, Long> streamPipeline10() {
-        // TODO
-        return null;
+
+        return countries.stream().flatMap(country -> country.getTimezones().stream()).collect(Collectors.groupingBy(t -> t, Collectors.counting()));
     }
 
     /**
      * Returns the number of country names by region that starts with their two-letter country code ignoring case.
      */
     public Map<Region, Long> streamPipeline11() {
-        // TODO
-        return null;
+
+        return countries.stream().filter(country -> country.getName().toUpperCase().startsWith(country.getCode())).collect(Collectors.groupingBy(Country::getRegion, Collectors.counting()));
     }
 
     /**
@@ -118,8 +118,8 @@ public class Homework2 {
      * Returns a map that contains for each country code the name of the corresponding country in Portuguese ({@code "pt"}).
      */
     public Map<String, String> streamPipeline13() {
-        // TODO
-        return null;
+
+        return countries.stream().collect(Collectors.toMap(Country::getCode, s -> s.getTranslations().get("pt")));
     }
 
     /**
